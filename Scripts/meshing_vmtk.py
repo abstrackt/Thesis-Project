@@ -62,9 +62,11 @@ def export_mesh(out_path, files):
                "--pipe vmtksurfacewriter -i @.o -ofile ./tmp/meshes/" + file + ".stl"
                
         res = pypes.PypeRun(args)
+        
     
 def main():
     parser = OptionParser()
+    parser.
     parser.add_option('-i', '--input', action='store', dest='input')
     parser.add_option('-o', '--output', action='store', dest='output', default='./')
     parser.add_option('-c', '--class', action='append', dest='seg_class')
