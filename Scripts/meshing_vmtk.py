@@ -76,7 +76,7 @@ def main():
         print("Usage: python meshing.py -i <input_path> -o <output_path> (default ./) -c <class_1> -c <class_2>...")
         return
     
-    #segmentation(options.input) 
+    segmentation(options.input) 
     export_mesh(options.output, options.seg_class)
               
 if __name__ == "__main__":
