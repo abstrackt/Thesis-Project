@@ -127,3 +127,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Large data files
+*.nii.gz
+*.vti
+*.mhd
+*.vtk
+*.vtp
+*.dcm
+*.raw
+Notebooks/repository/*
