@@ -1,22 +1,18 @@
 import SimpleITK as sitk
 import os
 from optparse import OptionParser
-from totalsegmentator.python_api import totalsegmentator
 import fast
 import numpy as np
 from stl import mesh as stmesh
  
-def segmentation(file_name):
-    infile = file_name;
-    outdir = "tmp/segmentations/";
+def preprocess(folder_name):
+    outdir = folder_name;
  
     if not os.path.exists(outdir) :
         os.makedirs(outdir)
  
-    totalsegmentator(infile, outdir)
- 
-    indir = "tmp/segmentations/";
-    outdir = "tmp/segmentations/mhd/";
+    indir = folder_name;
+    outdir = folder_name + "/mhd/";
  
     if not os.path.exists(outdir) :
         os.makedirs(outdir)
@@ -84,7 +80,7 @@ def main():
         print("Usage: python meshing.py -i <input_path> -o <output_path> (default ./) -c <class_1> -c <class_2>...")
         return
     
-    segmentation(options.input) 
+    preprocess(options.input) 
     export_mesh(options.output, options.seg_class)
               
 if __name__ == "__main__":

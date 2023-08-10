@@ -1,26 +1,18 @@
 import SimpleITK as sitk
 import os
 from optparse import OptionParser
-from totalsegmentator.python_api import totalsegmentator
 from vmtk import pypes
 from vmtk import vmtkscripts
 import numpy as np
 from stl import mesh as stmesh
  
-def segmentation(file_name):
-    infile = file_name;
-    outdir = "tmp/segmentations/";
+def preprocess(folder_name):
+    
+    if not os.path.exists(folder_name) :
+        os.makedirs(folder_name)
  
-    if not os.path.exists(outdir) :
-        os.makedirs(outdir)
- 
-    totalsegmentator(infile, outdir)
- 
-    indir = "tmp/segmentations/";
-    outdir = "tmp/segmentations/mhd/";
- 
-    if not os.path.exists(outdir) :
-        os.makedirs(outdir)
+    indir = folder_name;
+    outdir = folder_name + "/mhd/";
  
     for file in os.listdir(indir):
         if os.path.isfile(indir + file) and ".nii.gz" in file :
@@ -37,36 +29,33 @@ def segmentation(file_name):
             if minmax_filter.GetMaximum() != 0 :
                 sitk.WriteImage(res, path)
             
-def export_mesh(out_path, files):
+def export_mesh(in_path, out_path, files):
     verts = []
     faces = []
  
     offset = 0
  
     for file in files:
-        indir = "tmp/segmentations/mhd/"
-        outdir = "tmp/meshes/"
         
-        if not os.path.exists(indir + file + ".mhd"):
+        if not os.path.exists(in_path + "/mhd/" + file + ".mhd"):
             continue
             
-        if not os.path.exists(outdir):
-            os.makedirs(outdir)
+        if not os.path.exists(out_path):
+            os.makedirs(out_path)
         
-        args = "vmtkimagereader -ifile " + indir + file + ".mhd" + " " +\
+        args = "vmtkimagereader -ifile " + in_path + "/mhd/" + file + ".mhd" + " " +\
                "--pipe vmtklevelsetsegmentation " +\
                "--pipe vmtkmarchingcubes -i @.o " +\
                "--pipe vmtksurfaceclipper -i @.o " +\
                "--pipe vmtksurfacesmoothing -i @.o -passband 0.1 -iterations 30 " +\
                "--pipe vmtksurfacesubdivision -i @.o -method butterfly " +\
-               "--pipe vmtksurfacewriter -i @.o -ofile ./tmp/meshes/" + file + ".stl"
+               "--pipe vmtksurfacewriter -i @.o -ofile " + out_path + file + ".stl"
                
         res = pypes.PypeRun(args)
         
     
 def main():
     parser = OptionParser()
-    parser.
     parser.add_option('-i', '--input', action='store', dest='input')
     parser.add_option('-o', '--output', action='store', dest='output', default='./')
     parser.add_option('-c', '--class', action='append', dest='seg_class')
@@ -76,8 +65,11 @@ def main():
         print("Usage: python meshing.py -i <input_path> -o <output_path> (default ./) -c <class_1> -c <class_2>...")
         return
     
-    segmentation(options.input) 
-    export_mesh(options.output, options.seg_class)
+    #preprocess(options.input) 
+    
+    print("Preprocessing finished, now exporting mesh");
+    
+    export_mesh(options.input, options.output, options.seg_class)
               
 if __name__ == "__main__":
     main()
