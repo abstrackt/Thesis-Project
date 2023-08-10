@@ -137,3 +137,5 @@ dmypy.json
 *.dcm
 *.raw
 Notebooks/repository/*
+*.DS_Store
+Notebooks/data/*
