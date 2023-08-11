@@ -2,6 +2,7 @@ import gmsh
 import sys
 import os
 import math
+from optparse import OptionParser
 
 def generate_3d_mesh(in_path):
     gmsh.initialize(sys.argv)
