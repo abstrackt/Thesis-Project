@@ -10,7 +10,7 @@ def generate_centerline(in_path, out_path):
     verts = []
     faces = []
 
-    args = "vmtksurfacereader -ifile " + in_path + " --pipe vmtkcenterlines --pipe vmtkrenderer --pipe vmtksurfaceviewer -opacity 0.25 --pipe vmtksurfaceviewer -i @vmtkcenterlines.voronoidiagram -array MaximumInscribedSphereRadius --pipe vmtksurfaceviewer -i @vmtkcenterlines.o"
+    args = "vmtksurfacereader -ifile " + in_path + " --pipe vmtkcenterlines -ofile " + os.path.join(out_path, "centerline.vtk") + " --pipe vmtkrenderer --pipe vmtksurfaceviewer -opacity 0.25 --pipe vmtksurfaceviewer -i @vmtkcenterlines.voronoidiagram -array MaximumInscribedSphereRadius --pipe vmtksurfaceviewer -i @vmtkcenterlines.o"
 
     res = pypes.PypeRun(args)
         
