@@ -1,6 +1,5 @@
 import gmsh
 import sys
-import os
 import math
 from optparse import OptionParser
 
