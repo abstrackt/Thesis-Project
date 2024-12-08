@@ -101,7 +101,7 @@ def main():
     scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
     scroll.setWidgetResizable(True)
 
-    segdir = "../examples/data/e3/mhd"
+    segdir = "../examples/data/e9/mhd"
 
     files = os.listdir(segdir)
 

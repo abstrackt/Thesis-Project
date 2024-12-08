@@ -4,7 +4,7 @@ from totalsegmentator.python_api import totalsegmentator as ts
 
 
 def segment_masks(in_path, out_dir=None):
-    if out_dir is not None:
+    if out_dir is None:
         out_dir = os.path.join(in_path, "mhd")
 
     if not os.path.exists(out_dir):
@@ -27,7 +27,7 @@ def segment_masks(in_path, out_dir=None):
                     sitk.WriteImage(res, path)
 
 
-def segment_refine(folder_name, classes, fx, fy, fz):
+def segment_refine(folder_name, classes, fx=False, fy=False, fz=False):
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
 

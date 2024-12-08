@@ -9,6 +9,7 @@ import numpy as np
 from vmtk import pypes
 from vmtk import vmtkscripts
 
+
 def export_stl(in_path, out_path):
     verts = []
     faces = []
