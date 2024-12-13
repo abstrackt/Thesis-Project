@@ -1,6 +1,6 @@
 import os
 from optparse import OptionParser
-from CTMesh.segmentation import segment
+from src.segmentation import segment
 
 def main():
     parser = OptionParser()
@@ -9,10 +9,10 @@ def main():
     (options, args) = parser.parse_args()
 
     if (len(args) != 0 or options.input == ''):
-        print("Usage: python segmentation.py -i <input_path> -o <output_path> (default ./)")
+        print("Usage: python mhd.py -i <input_path> -o <output_path> (default ./)")
         return
 
-    segment(options.input, os.path.join(options.output, "segmentation/"))
+    segment(options.input, os.path.join(options.output, "mhd/"))
 
 
 if __name__ == "__main__":

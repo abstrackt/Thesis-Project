@@ -1,6 +1,6 @@
 from optparse import OptionParser
-from CTMesh.meshing import export_stl
-from CTMesh.segmentation import segment_refine
+from src.meshing import mhd_mesher
+from src.segmentation import segment_refine
 
 
 def main():
@@ -23,7 +23,7 @@ def main():
 
     print("Preprocessing finished, now exporting mesh");
 
-    export_stl(options.input, options.output)
+    mhd_mesher(options.input, options.output)
 
 
 if __name__ == "__main__":

@@ -1,11 +1,11 @@
-from CTMesh.meshing import export_stl, boundary_layer_vmr, sample_voronoi_points, surface_to_numpy
-from CTMesh.centerlines import centerline
+from src.meshing import mhd_mesher, boundary_layer_vmr, sample_voronoi_points, surface_to_numpy
+from src.centerlines import centerline
 import matplotlib.pyplot as plt
 import math
 import numpy as np
 from scipy.stats import gaussian_kde
 
-mesh_dict = surface_to_numpy("./centerline.vtp")
+mesh_dict = surface_to_numpy("output/healthy_centerline.vtp")
 
 pts = mesh_dict['Points']
 tris = mesh_dict['CellData']['CellPointIds']

@@ -1,5 +1,5 @@
 from optparse import OptionParser
-from CTMesh.meshing import export_3d
+from src.meshing import export_3d
 
 def main():
     parser = OptionParser()

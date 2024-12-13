@@ -1,5 +1,5 @@
 from optparse import OptionParser
-from CTMesh.centerlines import centerline
+from src.centerlines import centerline
 
 def main():
     parser = OptionParser()

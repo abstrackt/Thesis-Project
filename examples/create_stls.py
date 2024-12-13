@@ -1,3 +1,3 @@
-from CTMesh.meshing import export_stl
+from src.meshing import mhd_mesher
 
-export_stl("./data/e3/mhd/image.mhd", "./data/e9/meshes/image.stl")
+mhd_mesher("./data/e3/mhd/aorta.mhd", "data/e3/meshes/image.stl")

@@ -1,6 +1,6 @@
-from CTMesh.segmentation import segment_refine
+from src.segmentation import segment_refine
 
-segment_refine("data/e9/", [
+segment_refine("data/e2/", [
    "aorta",
    "heart",
    "common_carotid_artery_left",
