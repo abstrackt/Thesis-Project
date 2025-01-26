@@ -33,3 +33,7 @@ def volume(a, b, c, d):
 
 def distance(a, b):
     return abs(norm(subtract(a, b)))
+
+
+
+

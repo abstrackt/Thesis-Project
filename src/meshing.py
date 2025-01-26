@@ -7,8 +7,10 @@ import sys
 import math
 
 import numpy as np
+import vtk
 from vmtk import pypes
 from vmtk import vmtkscripts
+from vtkmodules.util.numpy_support import numpy_to_vtk, vtk_to_numpy
 
 
 def mhd_mesher(in_path, out_path):
@@ -89,6 +91,24 @@ def numpy_to_surface(mesh_dict, out_file):
     writer.Execute()
 
 
+def _has_splits(in_file):
+    reader = vtk.vtkXMLPolyDataReader()
+    reader.SetFileName(in_file)
+    reader.Update()
+
+    poly_data = reader.GetOutput()
+
+    lines = poly_data.GetLines()
+    cell_count = lines.GetNumberOfCells()
+
+    return cell_count == 1
+
+
+def _find_nearest(array, value):
+    idx = (np.abs(array - value)).argmin()
+    return idx
+
+
 def _smooth_array(array, neighbors):
     new_array = np.empty(array.shape)
     print(neighbors[0:10])
@@ -126,7 +146,7 @@ def _perpendicular_vector(v):
     return np.cross(v, [1, 0, 0])
 
 
-def _rotation_matrix(axis, theta):
+def _rotation_matrix_axis_angle(axis, theta):
     axis = np.asarray(axis)
     axis = axis / math.sqrt(np.dot(axis, axis))
     a = math.cos(theta / 2.0)
@@ -250,7 +270,7 @@ class SamplingType(Enum):
     Cylinder = 3,
 
 
-def sample_voronoi_points(centerline_file, n_per_point, flat=False, adaptive=False, sampling: SamplingType = SamplingType.Circle):
+def sample_voronoi_points(centerline_file, n_per_point, adaptive=False, sampling: SamplingType = SamplingType.Circle):
     mesh_dict = surface_to_numpy(centerline_file)
 
     voronoi_points = []
@@ -276,7 +296,7 @@ def sample_voronoi_points(centerline_file, n_per_point, flat=False, adaptive=Fal
                     r_uniform = r * math.sqrt(random())
                     if sampling == SamplingType.Circle:
                         theta = random() * 2 * math.pi
-                        pt = r_uniform * np.dot(_rotation_matrix(axis, theta), vec)
+                        pt = r_uniform * np.dot(_rotation_matrix_axis_angle(axis, theta), vec)
                         pt += pts[branch[j]]
                         voronoi_points.append(pt)
                     elif sampling == SamplingType.Sphere:
@@ -284,9 +304,41 @@ def sample_voronoi_points(centerline_file, n_per_point, flat=False, adaptive=Fal
                         voronoi_points.append(pt)
                     elif sampling == SamplingType.Cylinder:
                         theta = random() * 2 * math.pi
-                        pt = r_uniform * np.dot(_rotation_matrix(axis, theta), vec)
+                        pt = r_uniform * np.dot(_rotation_matrix_axis_angle(axis, theta), vec)
                         pt += pts[branch[j]]
                         pt -= random() * axis
                         voronoi_points.append(pt)
 
     return voronoi_points
+
+
+def transform_to_cylinder(centerline_file, surface_file):
+    if _has_splits(centerline_file):
+        print("Split vessels are not supported in this version")
+
+    centerline_dict = surface_to_numpy(centerline_file)
+    surface_dict = surface_to_numpy(surface_file)
+
+    centerline_pts = centerline_dict['Points']
+    centerline_edges = centerline_dict['CellData']['CellPointIds']
+    centerline_absc = centerline_dict['PointData']['Abscissas']
+
+    assert all(centerline_edges[i] <= centerline_edges[i+1] for i in range(len(centerline_edges) - 1))
+
+    surface_pts = surface_dict['Points']
+    surface_dist = surface_dict['PointData']['DistanceToCenterlines']
+    surface_norm = surface_dict['PointData']['Normals']
+    surface_absc = surface_dict['PointData']['AbscissaMetric']
+
+    surface_to_centerline = {}
+
+    for i in range(len(surface_pts)):
+        index = _find_nearest(surface_absc[i], centerline_absc)
+        if not surface_to_centerline.get(index):
+            surface_to_centerline[index] = []
+        surface_to_centerline[index].append(i)
+
+    transforms = []
+
+    for i in range(len(centerline_pts), 0):
+        direction
